@@ -4,7 +4,7 @@ class Cat {
   final String origin;
   final String description;
   final String wikipediaUrl;
-  final String imageUrl;
+  final List<String> images;
   final String temperament;
   //
   final int intelligence;
@@ -23,7 +23,7 @@ class Cat {
   final int isExperimental;
 
   Cat({this.id, this.name, this.origin, this.description, this.wikipediaUrl,
-      this.imageUrl, this.temperament, this.intelligence, this.healthIssues, this.energyLevel,
+      this.images, this.temperament, this.intelligence, this.healthIssues, this.energyLevel,
       this.adaptability, this.affectionLevel, this.grooming, this.sheddingLevel,
       this.vocalisation, this.isRare, this.isRex, this.isHairless,
       this.isNatural, this.isExperimental});
@@ -39,14 +39,15 @@ class Cat {
 
   factory Cat.fromJson(Map<String, dynamic> body) {
     final breed = body['breeds'][0];
-    final url = body['url'];
+    final url = new List<String>();
+    url.add(body['url']);
     final cat = Cat(
       id: breed['id'],
       name: breed['name'],
       origin: breed['origin'],
       description: breed['description'],
       wikipediaUrl: breed['wikipedia_url'],
-      imageUrl: url,
+      images: url,
       temperament: breed['temperament'],
       intelligence: breed['intelligence'],
       healthIssues: 5 - breed['health_issues'],
@@ -63,5 +64,9 @@ class Cat {
       isExperimental: breed['experimental'],);
     //cat.getImage();
     return cat;
+  }
+
+  addImage(String url) {
+    this.images.add(url);
   }
 }

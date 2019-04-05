@@ -31,7 +31,7 @@ class _CatListWidgetState extends State<CatListWidget> {
       var futures = <Future>[];
       for (var c in catIds) {
         var res = http.get(
-            'https://api.thecatapi.com/v1/images/search?breed_id=' + c['id'],
+            'https://api.thecatapi.com/v1/images/search?breed_id=' + c['id'] + '&limit=5',
             headers: {
               'x-api-key': 'f99ea0d4-02dc-478c-8766-87cd0e559677',
             });
@@ -39,9 +39,14 @@ class _CatListWidgetState extends State<CatListWidget> {
       }
 
       var res = await Future.wait(futures);
-      for (var x in res) {
-        var xx = json.decode(x.body)[0];
-        var cat = Cat.fromJson(xx);
+      for (var r in res) {
+        var response = json.decode(r.body);
+        var mainCat = response[0];
+        var cat = Cat.fromJson(mainCat);
+
+        for (int i = 1; i < response.length; i++) {
+          cat.addImage((response[i])['url']);
+        }
         cats.add(cat);
       }
 
@@ -98,7 +103,7 @@ class _CatListWidgetState extends State<CatListWidget> {
                             ClipRRect(
                                 borderRadius: new BorderRadius.circular(16.0),
                                 child: CachedNetworkImage(
-                                  imageUrl: cats[index].imageUrl,
+                                  imageUrl: cats[index].images[0],
                                   placeholder: (context, url) => Image.asset(
                                         'asset/default-placeholder.png',
                                       ),
